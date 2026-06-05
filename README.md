@@ -2,7 +2,7 @@
 
 Backend NestJS para envío y seguimiento de contratos con [BlueInk](https://developer.blueink.com/).
 
-**No hay plantillas PDF ni field-maps en el repositorio.** Todo se identifica por `templateId` de BlueInk.
+Todo se identifica por un `templateId` de BlueInk.
 
 ## Inicio rápido
 
