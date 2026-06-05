@@ -35,7 +35,9 @@ export class TemplatesService {
     signers: Array<{ role: string }>,
   ): Promise<void> {
     const info = await this.fetchFromBlueink(templateId);
-    const validRoles = new Set(info.roles.map((r) => r.key));
+    const validRoles = new Set(
+      info.roles.map((r) => r.key).filter((k) => k.length > 0),
+    );
     if (validRoles.size === 0) return;
 
     for (const signer of signers) {

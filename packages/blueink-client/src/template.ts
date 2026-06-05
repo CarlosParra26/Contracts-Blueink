@@ -48,7 +48,8 @@ function normalizeTemplateFields(raw: unknown): BlueinkTemplateField[] {
 function extractFieldRole(field: Record<string, unknown>): string | undefined {
   if (field.role) return String(field.role);
   if (Array.isArray(field.editor_roles) && field.editor_roles[0]) {
-    return String(field.editor_roles[0]);
+    const er = field.editor_roles[0];
+    return typeof er === "string" ? er : String((er as { key?: string }).key ?? er);
   }
   if (Array.isArray(field.editors) && field.editors[0]) {
     return String(field.editors[0]);
@@ -61,13 +62,22 @@ function normalizeRoles(raw: unknown): Array<{ key: string; label?: string }> {
   const data = raw as Record<string, unknown>;
   const rolesRaw = data.roles;
   if (!Array.isArray(rolesRaw)) return [];
-  return rolesRaw.map((r) => {
+
+  const roles: Array<{ key: string; label?: string }> = [];
+  for (const r of rolesRaw) {
+    if (typeof r === "string") {
+      roles.push({ key: r, label: r });
+      continue;
+    }
     const role = r as Record<string, unknown>;
-    return {
-      key: String(role.key ?? role.id ?? ""),
-      label: role.label ? String(role.label) : undefined,
-    };
-  });
+    const key = String(role.key ?? role.id ?? "");
+    if (!key) continue;
+    roles.push({
+      key,
+      label: role.label ? String(role.label) : key,
+    });
+  }
+  return roles;
 }
 
 export function parseTemplateResponse(raw: unknown): BlueinkTemplateInfo {
