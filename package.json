@@ -1,0 +1,17 @@
+{
+  "name": "contracts-blueink",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm --filter @contracts/api run dev",
+    "start": "pnpm --filter @contracts/api run start",
+    "db:generate": "pnpm --filter @contracts/db run generate",
+    "db:migrate": "pnpm --filter @contracts/db run migrate",
+    "db:push": "pnpm --filter @contracts/db run push",
+    "lint": "pnpm -r run lint --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

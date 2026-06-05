@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Contract {
+  id               String   @id @default(uuid())
+  contractType     String   @map("contract_type")
+  matchId          String?  @map("match_id")
+  metadata         Json?
+  blueinkBundleId  String?  @map("blueink_bundle_id")
+  status           String   @default("draft")
+  statusUpdatedAt  DateTime @default(now()) @map("status_updated_at")
+  requesterEmail   String   @map("requester_email")
+  requesterName    String   @map("requester_name")
+  signers          Json
+  fieldValues      Json     @map("field_values")
+  signedPdfPath    String?  @map("signed_pdf_path")
+  signedPdfUrl     String?  @map("signed_pdf_url")
+  isTest           Boolean  @default(false) @map("is_test")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  events           ContractEvent[]
+
+  @@index([contractType, status])
+  @@index([blueinkBundleId])
+  @@index([matchId])
+  @@map("contracts")
+}
+
+model ContractEvent {
+  id          String   @id @default(uuid())
+  contractId  String   @map("contract_id")
+  eventId     String   @unique @map("event_id")
+  eventType   String   @map("event_type")
+  payload     Json?
+  processedAt DateTime @default(now()) @map("processed_at")
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId])
+  @@map("contract_events")
+}
